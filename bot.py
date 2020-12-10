@@ -20,14 +20,18 @@ def ask_question(message):
 
 @bot.message_handler(content_types=['text'])
 def show_answer(message):
-    dict = load_info()
-    answer = dict.get("answer")
-    image = dict.get("image")
-    if answer == 'yes':
-        bot.send_message(message.from_user.id, 'Да!')
+    if message.text[-1] != '?':
+        bot.send_message(message.from_user.id, "Я жду вопрос :)")
+        bot.register_next_step_handler(message, show_answer)
     else:
-        bot.send_message(message.from_user.id, 'Нет!')
-    bot.send_message(message.from_user.id, image)
+        dict = load_info()
+        answer = dict.get("answer")
+        image = dict.get("image")
+        if answer == 'yes':
+            bot.send_message(message.from_user.id, 'Да!')
+        else:
+            bot.send_message(message.from_user.id, 'Нет!')
+            bot.send_message(message.from_user.id, image)
 
 
 # вспомогательная функция, загружает информацию по указанному URL-адресу и возвращает их в формате словаря
