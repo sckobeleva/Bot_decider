@@ -21,10 +21,13 @@ def ask_question(message):
 @bot.message_handler(content_types=['text'])
 def show_answer(message):
     dict = load_info()
-    answer_part1 = dict.get("answer")
-    answer_part2 = dict.get("image")
-    bot.send_message(message.from_user.id, answer_part1)
-    bot.send_message(message.from_user.id, answer_part2)
+    answer = dict.get("answer")
+    image = dict.get("image")
+    if answer == 'yes':
+        bot.send_message(message.from_user.id, 'Да!')
+    else:
+        bot.send_message(message.from_user.id, 'Нет!')
+    bot.send_message(message.from_user.id, image)
 
 
 # вспомогательная функция, загружает информацию по указанному URL-адресу и возвращает их в формате словаря
@@ -33,6 +36,5 @@ def load_info():
 
 
 if __name__ == '__main__':
-     bot.infinity_polling()
-# еще можно просто одной строчкой:
-# bot.polling(none_stop=True)
+    bot.infinity_polling()
+
