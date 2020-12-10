@@ -5,6 +5,7 @@ import json
 token = '1401557252:AAGmtPSFaHlEu1AVMcAP2Kt8gWV9tqzWyVk'
 bot = telebot.TeleBot(token)
 URL = "https://yesno.wtf/api"
+no_list = ('нет', 'неа', 'не', 'no')
 
 
 @bot.message_handler(commands=['start','help'])
@@ -14,8 +15,16 @@ def start_command(message):
 
 @bot.message_handler(content_types=['text'])
 def ask_question(message):
-    bot.send_message(message.from_user.id, "Задай вопрос, на который можно ответить 'Да' или 'Нет'")
-    bot.register_next_step_handler(message, show_answer)  # следующий шаг – функция show_answer
+    n = 0
+    for i in no_list:
+        if i in message.text.lower():
+            n += 1
+    if n != 0:
+        bot.send_message(message.chat.id, "Ну что ж, поговорим в другой раз!")
+        bot.register_next_step_handler(message, start_command)
+    else:
+        bot.send_message(message.from_user.id, "Задай вопрос, на который можно ответить 'Да' или 'Нет'.")
+        bot.register_next_step_handler(message, show_answer)  # следующий шаг – функция show_answer
 
 
 @bot.message_handler(content_types=['text'])
@@ -29,6 +38,7 @@ def show_answer(message):
         image = dict.get("image")
         if answer == 'yes':
             bot.send_message(message.from_user.id, 'Да!')
+            bot.send_message(message.from_user.id, image)
         else:
             bot.send_message(message.from_user.id, 'Нет!')
             bot.send_message(message.from_user.id, image)
