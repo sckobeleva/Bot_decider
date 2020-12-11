@@ -5,7 +5,6 @@ import json
 token = '1401557252:AAGmtPSFaHlEu1AVMcAP2Kt8gWV9tqzWyVk'
 bot = telebot.TeleBot(token)
 URL = "https://yesno.wtf/api"
-no_list = ('нет', 'неа', 'не', 'no')
 
 
 @bot.message_handler(commands=['start','help'])
@@ -15,11 +14,7 @@ def start_command(message):
 
 @bot.message_handler(content_types=['text'])
 def ask_question(message):
-    n = 0
-    for i in no_list:
-        if i in message.text.lower():
-            n += 1
-    if n != 0:
+    if 'не' in message.text.lower() or 'no' in message.text.lower():
         bot.send_message(message.chat.id, "Ну что ж, поговорим в другой раз!")
         bot.register_next_step_handler(message, start_command)
     else:
